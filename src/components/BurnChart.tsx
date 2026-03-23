@@ -114,27 +114,29 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
 
   return (
     <div className={`bento-card fade-up ${animClass} p-4 sm:p-5`}>
-      {/* Header row */}
-      <div className="flex items-start justify-between mb-1 flex-wrap gap-2">
-        <div>
+      {/* Header */}
+      <div className="mb-1">
+        <div className="flex items-baseline justify-between">
           <h3 className="text-[10px] sm:text-[11px] font-medium tracking-widest uppercase text-zinc-500">
             {isCumulative ? `Cumulative ${title}` : title}
           </h3>
-          <p
-            className="text-lg sm:text-xl font-semibold text-white mt-1"
-            style={{ fontFamily: 'var(--font-mono)' }}
-          >
-            {dataKey === 'usd' ? formatUSD(rangeTotal) : formatNumber(rangeTotal)}
-          </p>
         </div>
-        <TimeRangePicker active={range} onChange={setRange} />
+        <p
+          className="text-lg sm:text-xl font-semibold text-white mt-1"
+          style={{ fontFamily: 'var(--font-mono)' }}
+        >
+          {dataKey === 'usd' ? formatUSD(rangeTotal) : formatNumber(rangeTotal)}
+        </p>
+        <div className="mt-2">
+          <TimeRangePicker active={range} onChange={setRange} />
+        </div>
       </div>
 
       {/* Chart */}
       <div className="h-[380px] sm:h-[460px] mt-2 -ml-1">
         <ResponsiveContainer width="100%" height="100%">
           {isCumulative ? (
-            <AreaChart data={cumData}>
+            <AreaChart data={cumData} margin={{ top: 8, right: 4, bottom: 0, left: 0 }}>
               <defs>
                 <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor={lineColor} stopOpacity={0.3} />
@@ -149,7 +151,8 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
                 tick={{ fontSize: 10, fill: '#3f3f46' }}
                 axisLine={false}
                 tickLine={false}
-                interval={cumTickInterval}
+                interval={Math.floor(cumData.length / 6)}
+                height={30}
               />
               <YAxis
                 tickFormatter={(v) => (dataKey === 'usd' ? '$' + formatNumber(v) : formatNumber(v))}
@@ -177,6 +180,7 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
           ) : (
             <BarChart
               data={filtered}
+              margin={{ top: 8, right: 4, bottom: 0, left: 0 }}
               onMouseMove={(state: any) => {
                 if (state?.activeTooltipIndex !== undefined) setHoveredIdx(state.activeTooltipIndex);
               }}
@@ -189,7 +193,8 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
                 tick={{ fontSize: 10, fill: '#3f3f46' }}
                 axisLine={false}
                 tickLine={false}
-                interval={tickInterval}
+                interval={filtered.length <= 7 ? 0 : Math.floor(filtered.length / 6)}
+                height={30}
               />
               <YAxis
                 tickFormatter={(v) => (dataKey === 'usd' ? '$' + formatNumber(v) : formatNumber(v))}
