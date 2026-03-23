@@ -9,14 +9,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
-        {children}
-        <script dangerouslySetInnerHTML={{ __html: `
-          setInterval(() => {
-            window.parent.postMessage({ type: "seda-resize", height: document.body.scrollHeight }, "*");
-          }, 500);
-        `}} />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

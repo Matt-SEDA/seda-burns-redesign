@@ -34,36 +34,78 @@ export default function Dashboard() {
   const totalUsd = records.reduce((s, r) => s + r.usd, 0);
 
   return (
-    <div className="min-h-screen bg-black px-3 py-3 sm:px-5 sm:py-4 lg:px-8 lg:py-6 max-w-[1200px] mx-auto">
+    <div className="min-h-screen bg-[#08080a] px-3 py-3 sm:px-5 sm:py-4 lg:px-8 lg:py-6 max-w-[1200px] mx-auto">
 
-      {/* Top metrics row - 2x2 on mobile, 4 across on desktop */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-2 sm:mb-3">
-        <MetricCard
-          label="Total SEDA Burned"
-          value={formatNumber(totalSeda)}
-          sub={`${records.length} days tracked`}
-          animClass="fade-up-1"
-        />
-        <MetricCard
-          label="Total Chain Fees (USD)"
-          value={formatUSD(totalUsd)}
-          sub={'\u00A0'}
-          animClass="fade-up-2"
-        />
-        {/* ✏️ EDIT Perp Volume here — change the number below */}
-        <MetricCard
-          label="Perp Volume Powered"
-          value={formatUSD(11060000000)}
-          sub="Across all live markets"
-          animClass="fade-up-3"
-        />
-        {/* ✏️ EDIT Oracle Programs here — change the string below */}
-        <MetricCard
-          label="Oracle Programs"
-          value="188"
-          sub="Deployed on mainnet"
-          animClass="fade-up-4"
-        />
+      {/* Top metrics row with animated background */}
+      <div className="relative rounded-2xl overflow-hidden mb-2 sm:mb-3">
+        {/* Animated wavy gradient background */}
+        <div className="absolute inset-0 opacity-40" style={{ zIndex: 0 }}>
+          <div className="absolute inset-0 animate-wave-slow">
+            <div
+              className="absolute w-[200%] h-[200%] -top-1/2 -left-1/2"
+              style={{
+                background: 'radial-gradient(ellipse at 30% 50%, rgba(139, 92, 246, 0.4) 0%, transparent 50%), radial-gradient(ellipse at 70% 50%, rgba(6, 214, 160, 0.3) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(99, 102, 241, 0.2) 0%, transparent 40%)',
+                animation: 'waveMove 12s ease-in-out infinite alternate',
+              }}
+            />
+          </div>
+          <div className="absolute inset-0">
+            <div
+              className="absolute w-[200%] h-[200%] -top-1/4 -left-1/4"
+              style={{
+                background: 'radial-gradient(ellipse at 60% 40%, rgba(139, 92, 246, 0.25) 0%, transparent 45%), radial-gradient(ellipse at 20% 70%, rgba(6, 214, 160, 0.2) 0%, transparent 40%)',
+                animation: 'waveMove2 15s ease-in-out infinite alternate',
+              }}
+            />
+          </div>
+          {/* Curved wave overlay */}
+          <svg className="absolute bottom-0 left-0 w-full" viewBox="0 0 1200 120" preserveAspectRatio="none" style={{ opacity: 0.15 }}>
+            <path d="M0,60 C200,100 400,20 600,60 C800,100 1000,20 1200,60 L1200,120 L0,120Z" fill="url(#waveGrad)">
+              <animate attributeName="d" dur="8s" repeatCount="indefinite" values="
+                M0,60 C200,100 400,20 600,60 C800,100 1000,20 1200,60 L1200,120 L0,120Z;
+                M0,50 C200,20 400,90 600,50 C800,20 1000,90 1200,50 L1200,120 L0,120Z;
+                M0,60 C200,100 400,20 600,60 C800,100 1000,20 1200,60 L1200,120 L0,120Z
+              " />
+            </path>
+            <defs>
+              <linearGradient id="waveGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#8b5cf6" />
+                <stop offset="50%" stopColor="#06d6a0" />
+                <stop offset="100%" stopColor="#6366f1" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+
+        {/* Metric cards */}
+        <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 p-2 sm:p-3">
+          <MetricCard
+            label="Total SEDA Burned"
+            value={formatNumber(totalSeda)}
+            sub={`${records.length} days tracked`}
+            animClass="fade-up-1"
+          />
+          <MetricCard
+            label="Total Chain Fees (USD)"
+            value={formatUSD(totalUsd)}
+            sub={'\u00A0'}
+            animClass="fade-up-2"
+          />
+          {/* ✏️ EDIT Perp Volume here — change the number below */}
+          <MetricCard
+            label="Perp Volume Powered"
+            value={formatUSD(11060000000)}
+            sub={'\u00A0'}
+            animClass="fade-up-3"
+          />
+          {/* ✏️ EDIT Oracle Programs here — change the string below */}
+          <MetricCard
+            label="Oracle Programs"
+            value="175"
+            sub="Deployed on mainnet"
+            animClass="fade-up-4"
+          />
+        </div>
       </div>
 
       {/* Charts - stacked on mobile, side by side on desktop */}
