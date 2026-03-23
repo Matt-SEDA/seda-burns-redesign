@@ -34,7 +34,7 @@ export default function Dashboard() {
   const totalUsd = records.reduce((s, r) => s + r.usd, 0);
 
   return (
-    <div className="min-h-screen bg-[#08080a] px-3 py-3 sm:px-5 sm:py-4 lg:px-8 lg:py-6 max-w-[1200px] mx-auto">
+    <div className="min-h-screen bg-black px-3 py-3 sm:px-5 sm:py-4 lg:px-8 lg:py-6 max-w-[1200px] mx-auto">
 
       {/* Top metrics row - 2x2 on mobile, 4 across on desktop */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-2 sm:mb-3">
