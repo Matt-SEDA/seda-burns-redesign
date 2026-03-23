@@ -17,7 +17,7 @@
 
 body {
   font-family: var(--font-body);
-  background: #08080a;
+  background: #000000;
   color: #fafafa;
   margin: 0;
   -webkit-font-smoothing: antialiased;
@@ -102,14 +102,4 @@ body {
   color: #fafafa;
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Wavy gradient animations for metrics background */
-@keyframes waveMove {
-  0% { transform: translate(0%, 0%) rotate(0deg); }
-  100% { transform: translate(-10%, 5%) rotate(3deg); }
-}
-@keyframes waveMove2 {
-  0% { transform: translate(0%, 0%) rotate(0deg) scale(1); }
-  100% { transform: translate(5%, -8%) rotate(-2deg) scale(1.05); }
 }
