@@ -53,14 +53,14 @@ export default function Dashboard() {
         {/* ✏️ EDIT Perp Volume here — change the number below */}
         <MetricCard
           label="Perp Volume Powered"
-          value={formatUSD(11060000000)}
+          value={formatUSD(11120000000)}
           sub="Across all live markets"
           animClass="fade-up-3"
         />
         {/* ✏️ EDIT Oracle Programs here — change the string below */}
         <MetricCard
           label="Oracle Programs"
-          value="188"
+          value="189"
           sub="Deployed on mainnet"
           animClass="fade-up-4"
         />
