@@ -185,8 +185,8 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
                 {filtered.map((_, i) => (
                   <Cell
                     key={i}
-                    fill={hoveredIdx === i ? lineColorHex : barColorDim}
-                    fillOpacity={hoveredIdx === i ? 1 : 0.7}
+                    fill={lineColorHex}
+                    fillOpacity={hoveredIdx === null ? 1 : hoveredIdx === i ? 1 : 0.5}
                     style={{ transition: 'fill 150ms ease, fill-opacity 150ms ease' }}
                   />
                 ))}
