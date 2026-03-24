@@ -34,23 +34,13 @@ const BarTooltip = ({ active, payload, dataKey }: any) => {
   if (!active || !payload?.length) return null;
   const d = payload[0].payload;
   return (
-    <div
-      style={{
-        background: 'rgba(17, 17, 20, 0.95)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        borderRadius: 10,
-        padding: '8px 12px',
-        fontSize: 12,
-        backdropFilter: 'blur(8px)',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-      }}
-    >
-      <p style={{ color: '#71717a', marginBottom: 4, fontSize: 11 }}>{d.date}</p>
-      <p style={{ color: '#fff', fontWeight: 600, fontFamily: 'var(--font-mono)', fontSize: 13 }}>
+    <div className="chart-tooltip">
+      <p className="chart-tooltip__date">{d.date}</p>
+      <p className="chart-tooltip__value">
         {dataKey === 'usd' ? formatUSD(d.usd) : formatNumber(d.seda) + ' SEDA'}
       </p>
       {d.price != null && (
-        <p style={{ color: '#52525b', marginTop: 2, fontSize: 10 }}>
+        <p className="chart-tooltip__detail">
           SEDA price: ${d.price.toFixed(4)}
         </p>
       )}
@@ -63,22 +53,12 @@ const CumTooltip = ({ active, payload, dataKey }: any) => {
   const d = payload[0].payload;
   const cumKey = dataKey === 'usd' ? 'cumUsd' : 'cumSeda';
   return (
-    <div
-      style={{
-        background: 'rgba(17, 17, 20, 0.95)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        borderRadius: 10,
-        padding: '8px 12px',
-        fontSize: 12,
-        backdropFilter: 'blur(8px)',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-      }}
-    >
-      <p style={{ color: '#71717a', marginBottom: 4, fontSize: 11 }}>{d.date}</p>
-      <p style={{ color: '#fff', fontWeight: 600, fontFamily: 'var(--font-mono)', fontSize: 13 }}>
+    <div className="chart-tooltip">
+      <p className="chart-tooltip__date">{d.date}</p>
+      <p className="chart-tooltip__value">
         {dataKey === 'usd' ? formatUSD(d[cumKey]) : formatNumber(d[cumKey]) + ' SEDA'}
       </p>
-      <p style={{ color: '#52525b', marginTop: 2, fontSize: 10 }}>
+      <p className="chart-tooltip__detail">
         Daily: {dataKey === 'usd' ? formatUSD(d.usd) : formatNumber(d.seda) + ' SEDA'}
       </p>
     </div>
@@ -100,10 +80,12 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
 
   const cumKey = dataKey === 'usd' ? 'cumUsd' : 'cumSeda';
 
-  // Colors: purple for USD charts, cyan for SEDA charts
-  const barColor = dataKey === 'usd' ? '#8b5cf6' : '#06d6a0';
-  const barColorDim = dataKey === 'usd' ? '#6d28d9' : '#059669';
-  const lineColor = dataKey === 'usd' ? '#8b5cf6' : '#06d6a0';
+  // Colors: purple for USD charts, teal for SEDA charts (SEDA tokens)
+  const barColor = dataKey === 'usd' ? 'var(--primary-primary)' : 'var(--success-success)';
+  const barColorDim = dataKey === 'usd' ? '#270067' : '#006458';
+  const lineColor = dataKey === 'usd' ? 'var(--primary-primary)' : 'var(--success-success)';
+  // Raw hex needed for SVG gradient stops
+  const lineColorHex = dataKey === 'usd' ? '#6100ff' : '#1fe9d1';
   const gradientId = `grad-${dataKey}`;
 
   // Summary stat for the current range
@@ -113,42 +95,37 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
   }, [records, filtered, dataKey, isCumulative]);
 
   return (
-    <div className={`bento-card fade-up ${animClass} p-4 sm:p-5`}>
+    <div className={`seda-card fade-up ${animClass} chart-card`}>
       {/* Header */}
-      <div className="mb-1">
-        <div className="flex items-baseline justify-between">
-          <h3 className="text-[10px] sm:text-[11px] font-medium tracking-widest uppercase text-zinc-500">
-            {isCumulative ? `Cumulative ${title}` : title}
-          </h3>
-        </div>
-        <p
-          className="text-lg sm:text-xl font-semibold text-white mt-1"
-          style={{ fontFamily: 'var(--font-mono)' }}
-        >
+      <div className="chart-card__header">
+        <h3 className="chart-card__title">
+          {isCumulative ? `Cumulative ${title}` : title}
+        </h3>
+        <p className="chart-card__value">
           {dataKey === 'usd' ? formatUSD(rangeTotal) : formatNumber(rangeTotal)}
         </p>
-        <div className="mt-2">
+        <div className="chart-card__controls">
           <TimeRangePicker active={range} onChange={setRange} />
         </div>
       </div>
 
       {/* Chart */}
-      <div className="h-[380px] sm:h-[460px] mt-2 -ml-1">
+      <div className="chart-card__area">
         <ResponsiveContainer width="100%" height="100%">
           {isCumulative ? (
             <AreaChart data={cumData} margin={{ top: 8, right: 4, bottom: 0, left: 0 }}>
               <defs>
                 <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={lineColor} stopOpacity={0.3} />
-                  <stop offset="50%" stopColor={lineColor} stopOpacity={0.08} />
-                  <stop offset="100%" stopColor={lineColor} stopOpacity={0} />
+                  <stop offset="0%" stopColor={lineColorHex} stopOpacity={0.3} />
+                  <stop offset="50%" stopColor={lineColorHex} stopOpacity={0.08} />
+                  <stop offset="100%" stopColor={lineColorHex} stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
               <XAxis
                 dataKey="date"
                 tickFormatter={(d) => formatDateLabel(d, range)}
-                tick={{ fontSize: 10, fill: '#3f3f46' }}
+                tick={{ fontSize: 10, fill: '#4b4855' }}
                 axisLine={false}
                 tickLine={false}
                 interval={Math.floor(cumData.length / 6)}
@@ -156,7 +133,7 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
               />
               <YAxis
                 tickFormatter={(v) => (dataKey === 'usd' ? '$' + formatNumber(v) : formatNumber(v))}
-                tick={{ fontSize: 10, fill: '#3f3f46' }}
+                tick={{ fontSize: 10, fill: '#4b4855' }}
                 axisLine={false}
                 tickLine={false}
                 width={52}
@@ -165,15 +142,15 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
               <Area
                 type="monotone"
                 dataKey={cumKey}
-                stroke={lineColor}
+                stroke={lineColorHex}
                 strokeWidth={2}
                 fill={`url(#${gradientId})`}
                 dot={false}
                 activeDot={{
                   r: 4,
-                  stroke: lineColor,
+                  stroke: lineColorHex,
                   strokeWidth: 2,
-                  fill: '#08080a',
+                  fill: '#0a0a0f',
                 }}
               />
             </AreaChart>
@@ -190,7 +167,7 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
               <XAxis
                 dataKey="date"
                 tickFormatter={(d) => formatDateLabel(d, range)}
-                tick={{ fontSize: 10, fill: '#3f3f46' }}
+                tick={{ fontSize: 10, fill: '#4b4855' }}
                 axisLine={false}
                 tickLine={false}
                 interval={filtered.length <= 7 ? 0 : Math.floor(filtered.length / 6)}
@@ -198,7 +175,7 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
               />
               <YAxis
                 tickFormatter={(v) => (dataKey === 'usd' ? '$' + formatNumber(v) : formatNumber(v))}
-                tick={{ fontSize: 10, fill: '#3f3f46' }}
+                tick={{ fontSize: 10, fill: '#4b4855' }}
                 axisLine={false}
                 tickLine={false}
                 width={52}
@@ -208,9 +185,9 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
                 {filtered.map((_, i) => (
                   <Cell
                     key={i}
-                    fill={hoveredIdx === i ? barColor : barColorDim}
+                    fill={hoveredIdx === i ? lineColorHex : barColorDim}
                     fillOpacity={hoveredIdx === i ? 1 : 0.7}
-                    style={{ transition: 'fill 0.15s ease, fill-opacity 0.15s ease' }}
+                    style={{ transition: 'fill 150ms ease, fill-opacity 150ms ease' }}
                   />
                 ))}
               </Bar>

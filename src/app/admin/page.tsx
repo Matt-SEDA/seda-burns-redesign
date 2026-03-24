@@ -127,22 +127,20 @@ export default function AdminPage() {
 
   if (!authed) {
     return (
-      <div className="min-h-screen bg-surface-0 flex items-center justify-center p-4">
-        <form onSubmit={handleLogin} className="bg-surface-1 border border-border rounded-xl p-6 w-full max-w-sm">
-          <h1 className="text-lg font-semibold text-white mb-4">Admin Login</h1>
+      <div className="admin-login">
+        <form onSubmit={handleLogin} className="admin-login__form">
+          <h1 className="admin-login__title">Admin Login</h1>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter admin password"
-            className="w-full bg-surface-2 border border-border rounded-lg px-3 py-2 text-white text-sm placeholder-zinc-500 focus:outline-none focus:border-accent mb-3"
+            className="admin-input"
+            style={{ marginBottom: 12 }}
             autoFocus
           />
-          {authError && <p className="text-red-400 text-xs mb-2">{authError}</p>}
-          <button
-            type="submit"
-            className="w-full bg-accent text-surface-0 font-medium text-sm rounded-lg py-2 hover:bg-cyan-300 transition-colors"
-          >
+          {authError && <p className="admin-error">{authError}</p>}
+          <button type="submit" className="admin-btn-primary" style={{ width: '100%' }}>
             Login
           </button>
         </form>
@@ -151,125 +149,113 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface-0 p-4 sm:p-6 lg:p-8 max-w-[800px] mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-lg font-semibold text-white">SEDA Burns Admin</h1>
-        <a href="/" className="text-xs text-accent hover:underline">← Dashboard</a>
+    <div className="admin-page">
+      <div className="admin-page__header">
+        <h1 className="admin-page__title">SEDA Burns Admin</h1>
+        <a href="/" className="admin-page__back">← Dashboard</a>
       </div>
 
       {status && (
-        <div className="bg-surface-2 border border-border rounded-lg px-3 py-2 text-sm text-zinc-300 mb-4">
-          {status}
-        </div>
+        <div className="admin-status">{status}</div>
       )}
 
-      <div className="bg-surface-1 border border-border rounded-xl p-5 mb-4">
-        <h2 className="text-sm font-medium text-zinc-400 mb-3">Add Daily Record</h2>
-        <form onSubmit={handleAddRecord} className="space-y-3">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="admin-section">
+        <h2 className="admin-section__title">Add Daily Record</h2>
+        <form onSubmit={handleAddRecord} className="admin-form">
+          <div className="admin-form-grid">
             <div>
-              <label className="text-[10px] uppercase tracking-wide text-zinc-500 mb-1 block">Date</label>
+              <label className="admin-field-label">Date</label>
               <input
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full bg-surface-2 border border-border rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-accent [color-scheme:dark]"
+                className="admin-input admin-input--date"
               />
             </div>
             <div>
-              <label className="text-[10px] uppercase tracking-wide text-zinc-500 mb-1 block">SEDA Burned</label>
+              <label className="admin-field-label">SEDA Burned</label>
               <input
                 type="number"
                 value={seda}
                 onChange={(e) => setSeda(e.target.value)}
                 placeholder="42274"
-                className="w-full bg-surface-2 border border-border rounded-lg px-3 py-2 text-white text-sm placeholder-zinc-600 focus:outline-none focus:border-accent"
+                className="admin-input"
               />
             </div>
             <div>
-              <label className="text-[10px] uppercase tracking-wide text-zinc-500 mb-1 block">USD Revenue</label>
+              <label className="admin-field-label">USD Revenue</label>
               <input
                 type="number"
                 step="0.01"
                 value={usd}
                 onChange={(e) => setUsd(e.target.value)}
                 placeholder="930.45"
-                className="w-full bg-surface-2 border border-border rounded-lg px-3 py-2 text-white text-sm placeholder-zinc-600 focus:outline-none focus:border-accent"
+                className="admin-input"
               />
             </div>
             <div>
-              <label className="text-[10px] uppercase tracking-wide text-zinc-500 mb-1 block">SEDA Price (opt)</label>
+              <label className="admin-field-label">SEDA Price (opt)</label>
               <input
                 type="number"
                 step="0.00001"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 placeholder="0.02201"
-                className="w-full bg-surface-2 border border-border rounded-lg px-3 py-2 text-white text-sm placeholder-zinc-600 focus:outline-none focus:border-accent"
+                className="admin-input"
               />
             </div>
           </div>
-          <button
-            type="submit"
-            className="bg-accent text-surface-0 font-medium text-sm rounded-lg px-4 py-2 hover:bg-cyan-300 transition-colors"
-          >
+          <button type="submit" className="admin-btn-primary">
             Add / Update Record
           </button>
         </form>
       </div>
 
-      <div className="bg-surface-1 border border-border rounded-xl p-5 mb-4">
-        <h2 className="text-sm font-medium text-zinc-400 mb-3">
+      <div className="admin-section">
+        <h2 className="admin-section__title">
           Fast Requests Sold
-          <span className="ml-2 text-zinc-500 font-normal">Current: {currentFR.toLocaleString()}</span>
+          <span className="admin-section__title-detail">Current: {currentFR.toLocaleString()}</span>
         </h2>
-        <form onSubmit={handleUpdateFR} className="flex gap-3">
+        <form onSubmit={handleUpdateFR} className="admin-inline-form">
           <input
             type="number"
             value={fastRequests}
             onChange={(e) => setFastRequests(e.target.value)}
             placeholder="New total"
-            className="bg-surface-2 border border-border rounded-lg px-3 py-2 text-white text-sm placeholder-zinc-600 focus:outline-none focus:border-accent flex-1 max-w-[200px]"
+            className="admin-input admin-inline-input"
           />
-          <button
-            type="submit"
-            className="bg-surface-3 border border-border text-zinc-300 font-medium text-sm rounded-lg px-4 py-2 hover:border-accent transition-colors"
-          >
+          <button type="submit" className="admin-btn-secondary">
             Update
           </button>
         </form>
       </div>
 
-      <div className="bg-surface-1 border border-border rounded-xl p-5">
-        <h2 className="text-sm font-medium text-zinc-400 mb-3">Recent Records (last 10)</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
+      <div className="admin-section">
+        <h2 className="admin-section__title">Recent Records (last 10)</h2>
+        <div className="admin-table__overflow">
+          <table className="admin-table">
             <thead>
-              <tr className="text-zinc-500 border-b border-border">
-                <th className="text-left py-2 pr-4 font-medium">Date</th>
-                <th className="text-right py-2 pr-4 font-medium">SEDA</th>
-                <th className="text-right py-2 pr-4 font-medium">USD</th>
-                <th className="text-right py-2 pr-4 font-medium">Price</th>
-                <th className="text-right py-2 font-medium"></th>
+              <tr>
+                <th>Date</th>
+                <th>SEDA</th>
+                <th>USD</th>
+                <th>Price</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               {recentRecords.map((r) => (
-                <tr key={r.date} className="border-b border-border/50 hover:bg-surface-2">
-                  <td className="py-2 pr-4 text-zinc-300">{r.date}</td>
-                  <td className="py-2 pr-4 text-right text-white" style={{ fontFamily: 'var(--font-mono)' }}>
-                    {r.seda.toLocaleString()}
-                  </td>
-                  <td className="py-2 pr-4 text-right text-white" style={{ fontFamily: 'var(--font-mono)' }}>
-                    ${r.usd.toLocaleString()}
-                  </td>
-                  <td className="py-2 pr-4 text-right text-zinc-500" style={{ fontFamily: 'var(--font-mono)' }}>
+                <tr key={r.date}>
+                  <td className="admin-table__date">{r.date}</td>
+                  <td className="admin-table__value">{r.seda.toLocaleString()}</td>
+                  <td className="admin-table__value">${r.usd.toLocaleString()}</td>
+                  <td className="admin-table__muted">
                     {r.price ? `$${r.price.toFixed(4)}` : '—'}
                   </td>
-                  <td className="py-2 text-right">
+                  <td style={{ textAlign: 'right' }}>
                     <button
                       onClick={() => handleDelete(r.date)}
-                      className="text-zinc-600 hover:text-red-400 transition-colors text-base"
+                      className="admin-table__delete"
                     >
                       ×
                     </button>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import Navbar from '@/components/Navbar';
 
 export const metadata: Metadata = {
   title: 'SEDA Burns Dashboard',
@@ -9,13 +10,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body data-theme="dark">
+        <Navbar />
         {children}
-        <script dangerouslySetInnerHTML={{ __html: `
-          setInterval(() => {
-            window.parent.postMessage({ type: "seda-resize", height: document.body.scrollHeight }, "*");
-          }, 500);
-        `}} />
       </body>
     </html>
   );

@@ -5,6 +5,7 @@ import { DashboardData } from '@/lib/types';
 import { formatNumber, formatUSD } from '@/lib/utils';
 import MetricCard from './MetricCard';
 import BurnChart from './BurnChart';
+import ForecastChart from './ForecastChart';
 
 export default function Dashboard() {
   const [data, setData] = useState<DashboardData | null>(null);
@@ -18,26 +19,24 @@ export default function Dashboard() {
 
   if (!data) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div
-            className="w-6 h-6 border-2 border-zinc-700 border-t-violet-500 rounded-full animate-spin"
-          />
-          <span className="text-zinc-600 text-xs tracking-wide">Loading data…</span>
+      <div className="loading-screen">
+        <div className="loading-inner">
+          <div className="loading-spinner" />
+          <span className="loading-text">Loading data…</span>
         </div>
       </div>
     );
   }
 
-  const { records, fastRequestsSold } = data;
+  const { records } = data;
   const totalSeda = records.reduce((s, r) => s + r.seda, 0);
   const totalUsd = records.reduce((s, r) => s + r.usd, 0);
 
   return (
-    <div className="min-h-screen bg-black px-3 py-3 sm:px-5 sm:py-4 lg:px-8 lg:py-6 max-w-[1200px] mx-auto">
+    <div className="page-wrapper">
 
       {/* Top metrics row - 2x2 on mobile, 4 across on desktop */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-2 sm:mb-3">
+      <div className="metrics-grid">
         <MetricCard
           label="Total SEDA Burned"
           value={formatNumber(totalSeda)}
@@ -54,7 +53,7 @@ export default function Dashboard() {
         <MetricCard
           label="Perp Volume Powered"
           value={formatUSD(11120000000)}
-          sub="Across all live markets"
+          sub={'\u00A0'}
           animClass="fade-up-3"
         />
         {/* ✏️ EDIT Oracle Programs here — change the string below */}
@@ -67,7 +66,7 @@ export default function Dashboard() {
       </div>
 
       {/* Charts - stacked on mobile, side by side on desktop */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-3">
+      <div className="charts-grid">
         <BurnChart
           records={records}
           dataKey="usd"
@@ -80,6 +79,11 @@ export default function Dashboard() {
           title="SEDA Burned"
           animClass="fade-up-6"
         />
+      </div>
+
+      {/* Forecast chart - full width */}
+      <div className="forecast-section">
+        <ForecastChart records={records} animClass="fade-up-6" />
       </div>
 
     </div>
