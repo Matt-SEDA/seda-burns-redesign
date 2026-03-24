@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const NAV_LINKS = [
   { label: 'Team', href: 'https://seda.xyz/about' },
@@ -44,8 +44,41 @@ function CloseIcon() {
   );
 }
 
+function SunIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="5" />
+      <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+    </svg>
+  );
+}
+
+function MoonIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+    </svg>
+  );
+}
+
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  useEffect(() => {
+    const stored = localStorage.getItem('seda-theme') as 'dark' | 'light' | null;
+    if (stored) {
+      setTheme(stored);
+      document.body.setAttribute('data-theme', stored);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    document.body.setAttribute('data-theme', next);
+    localStorage.setItem('seda-theme', next);
+  };
 
   return (
     <nav className="navbar">
@@ -70,7 +103,7 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Right: CTA (desktop) + hamburger (mobile) */}
+        {/* Right: CTA + theme toggle + hamburger */}
         <div className="navbar__right">
           <a
             href={CTA_HREF}
@@ -80,6 +113,13 @@ export default function Navbar() {
           >
             Get Started
           </a>
+          <button
+            className="theme-toggle"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+          </button>
           <button
             className="navbar__hamburger"
             onClick={() => setMobileOpen(!mobileOpen)}

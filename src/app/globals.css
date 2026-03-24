@@ -65,6 +65,87 @@
   /* Border */
   --border-border: #4b4855;
   --border-highlight: #757280;
+
+  /* Chart axis (used inline in SVG — can't use var() there) */
+  --chart-axis-fill: #4b4855;
+  --chart-grid-stroke: rgba(255, 255, 255, 0.04);
+  --chart-cursor-stroke: rgba(255, 255, 255, 0.06);
+  --chart-ref-stroke: rgba(255, 255, 255, 0.15);
+
+  /* Navbar background */
+  --navbar-bg: rgba(10, 10, 15, 0.85);
+}
+
+/* ── Light Theme ──────────────────────────────────────────── */
+[data-theme="light"] {
+  /* Background */
+  --background-background: #f7f5fa;
+  --background-on-background: #1a1625;
+  --background-on-background-highlight: #6100ff;
+  --background-on-background-secondary: #3d3654;
+  --background-on-background-tertiary: #5c5672;
+  --background-on-background-quaternary: #7d7891;
+
+  /* Cards */
+  --card-background-default: #ffffff;
+  --card-background-high: #f0edf5;
+  --card-background-highest: #e4e0ec;
+
+  /* Primary (Purple — same hue, adjusted for light) */
+  --primary-primary: #6100ff;
+  --primary-on-primary: #ffffff;
+  --primary-hover-primary: #5000d4;
+  --primary-primary-container: #f0e6ff;
+  --primary-on-primary-container: #270067;
+
+  /* Secondary */
+  --secondary-secondary: #1a1625;
+  --secondary-on-secondary: #ffffff;
+
+  /* Tertiary */
+  --tertiary-tertiary: #f0edf5;
+  --tertiary-on-tertiary: #1a1625;
+  --tertiary-hover-tertiary: #e4e0ec;
+
+  /* Link */
+  --link-link: #6100ff;
+  --link-link-hover: #5000d4;
+
+  /* Success (Teal — darkened for light bg contrast) */
+  --success-success: #0db8a3;
+  --success-on-success: #ffffff;
+  --success-hover-success: #0a9988;
+  --success-success-container: #e6faf7;
+  --success-on-success-container: #004d42;
+
+  /* Danger (Red) */
+  --danger-danger: #c4054f;
+  --danger-on-danger: #ffffff;
+  --danger-hover-danger: #a30442;
+  --danger-on-background: #c4054f;
+  --danger-danger-container: #ffe6f0;
+  --danger-on-danger-container: #6b002d;
+
+  /* Warning (darkened for light bg) */
+  --warning-warning: #9a8800;
+  --warning-on-warning: #ffffff;
+  --warning-hover-warning: #7a6c00;
+  --warning-on-background: #9a8800;
+  --warning-warning-container: #fefff0;
+  --warning-on-warning-container: #3d3600;
+
+  /* Border */
+  --border-border: #ddd8e6;
+  --border-highlight: #c4bed2;
+
+  /* Chart */
+  --chart-axis-fill: #9e99ad;
+  --chart-grid-stroke: rgba(0, 0, 0, 0.06);
+  --chart-cursor-stroke: rgba(0, 0, 0, 0.08);
+  --chart-ref-stroke: rgba(0, 0, 0, 0.15);
+
+  /* Navbar */
+  --navbar-bg: rgba(247, 245, 250, 0.88);
 }
 
 /* ── Reset ────────────────────────────────────────────────── */
@@ -91,7 +172,7 @@ body {
 /* ── Recharts overrides ───────────────────────────────────── */
 .recharts-cartesian-grid-horizontal line,
 .recharts-cartesian-grid-vertical line {
-  stroke: rgba(255, 255, 255, 0.04) !important;
+  stroke: var(--chart-grid-stroke) !important;
 }
 .recharts-text {
   fill: var(--background-on-background-quaternary) !important;
@@ -114,12 +195,18 @@ body {
   inset: 0;
   border-radius: 16px;
   padding: 1px;
-  background: linear-gradient(160deg, rgba(97, 0, 255, 0.1) 0%, transparent 40%, rgba(31, 233, 209, 0.05) 100%);
+  background: linear-gradient(160deg, rgba(97, 0, 255, 0.08) 0%, transparent 40%, rgba(31, 233, 209, 0.04) 100%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
   -webkit-mask-composite: xor;
   pointer-events: none;
+}
+[data-theme="light"] .seda-card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+[data-theme="light"] .seda-card:hover {
+  box-shadow: 0 4px 16px rgba(97, 0, 255, 0.06);
 }
 .seda-card:hover {
   border-color: rgba(97, 0, 255, 0.2);
@@ -156,7 +243,7 @@ body {
 }
 .pill:hover {
   color: var(--background-on-background-tertiary);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(128, 128, 128, 0.06);
 }
 .pill.active {
   color: var(--background-on-background);
@@ -169,7 +256,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(10, 10, 15, 0.85);
+  background: var(--navbar-bg);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-border);
 }
@@ -227,7 +314,7 @@ body {
 
 .navbar__link:hover {
   color: var(--background-on-background);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(128, 128, 128, 0.06);
 }
 
 .navbar__right {
@@ -325,6 +412,50 @@ body {
 
 .navbar__mobile-cta:hover {
   background: var(--primary-hover-primary);
+}
+
+/* ── Theme toggle ─────────────────────────────────────────── */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: 1px solid var(--border-border);
+  border-radius: 8px;
+  color: var(--background-on-background-tertiary);
+  cursor: pointer;
+  transition: color 200ms ease, border-color 200ms ease;
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  color: var(--background-on-background);
+  border-color: var(--border-highlight);
+}
+
+/* Logo: invert for light theme */
+[data-theme="light"] .navbar__logo svg path {
+  fill: var(--background-on-background);
+}
+
+/* Tooltip light overrides */
+[data-theme="light"] .chart-tooltip {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: var(--border-border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Mobile divider light override */
+[data-theme="light"] .navbar__mobile-link {
+  border-bottom-color: var(--border-border);
+}
+
+/* Loading spinner light */
+[data-theme="light"] .loading-spinner {
+  border-color: var(--border-border);
+  border-top-color: var(--primary-primary);
 }
 
 /* ── Layout ───────────────────────────────────────────────── */

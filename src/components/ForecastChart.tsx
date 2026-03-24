@@ -14,6 +14,7 @@ import {
 } from 'recharts';
 import { DailyRecord } from '@/lib/types';
 import { formatNumber, formatUSD } from '@/lib/utils';
+import { useThemeColors } from '@/lib/useTheme';
 
 type Horizon = '1W' | '1M' | '1Y' | '3Y';
 type Baseline = '7D' | '30D';
@@ -119,17 +120,17 @@ function fmtDate(dateStr: string, horizon: Horizon): string {
   return d.toLocaleDateString('en', { month: 'short', year: '2-digit' });
 }
 
-const ForecastTooltip = ({ active, payload, tokenPrice }: any) => {
+const ForecastTooltip = ({ active, payload, tokenPrice, tc }: any) => {
   if (!active || !payload?.length) return null;
   const d = payload[0]?.payload;
   if (!d) return null;
   const cumSeda = d.foreSeda ?? d.histSeda ?? 0;
   return (
-    <div className="chart-tooltip">
+    <div className="chart-tooltip" style={{ background: tc.tooltipBg, borderColor: tc.tooltipBorder }}>
       <p className="chart-tooltip__date">
         {d.date} · {d.isForecast ? 'Projected' : 'Actual'}
       </p>
-      <p className="chart-tooltip__value" style={{ color: '#1fe9d1' }}>
+      <p className="chart-tooltip__value" style={{ color: tc.teal }}>
         {formatNumber(cumSeda)} cumulative SEDA burned
       </p>
       {d.isForecast && (
@@ -149,6 +150,7 @@ interface Props {
 }
 
 export default function ForecastChart({ records, animClass = '' }: Props) {
+  const tc = useThemeColors();
   const [horizon, setHorizon] = useState<Horizon>('1Y');
   const [baseline, setBaseline] = useState<Baseline>('30D');
   const [multiplier, setMultiplier] = useState<Multiplier>(1);
@@ -312,35 +314,35 @@ export default function ForecastChart({ records, animClass = '' }: Props) {
           <ComposedChart data={data} margin={{ top: 20, right: 4, bottom: 0, left: 0 }}>
             <defs>
               <linearGradient id="fSedaG" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#1fe9d1" stopOpacity={0.12} />
-                <stop offset="100%" stopColor="#1fe9d1" stopOpacity={0} />
+                <stop offset="0%" stopColor={tc.teal} stopOpacity={0.12} />
+                <stop offset="100%" stopColor={tc.teal} stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={tc.gridStroke} />
             <XAxis
               dataKey="date"
               tickFormatter={(d) => fmtDate(d, horizon)}
-              tick={{ fontSize: 10, fill: '#4b4855' }}
+              tick={{ fontSize: 10, fill: tc.axisFill }}
               axisLine={false} tickLine={false}
               interval={tickInt} height={30}
             />
             <YAxis
               tickFormatter={(v) => formatNumber(v)}
-              tick={{ fontSize: 10, fill: '#4b4855' }}
+              tick={{ fontSize: 10, fill: tc.axisFill }}
               axisLine={false} tickLine={false} width={58}
             />
-            <Tooltip content={<ForecastTooltip tokenPrice={tokenPrice} />} />
+            <Tooltip content={<ForecastTooltip tokenPrice={tokenPrice} tc={tc} />} />
             <ReferenceLine
               x={boundaryDate}
-              stroke="rgba(255,255,255,0.15)" strokeDasharray="4 4"
-              label={{ value: 'Today', position: 'insideTopRight', fill: '#a8a4b7', fontSize: 10, dy: -5 }}
+              stroke={tc.refStroke} strokeDasharray="4 4"
+              label={{ value: 'Today', position: 'insideTopRight', fill: tc.refLabel, fontSize: 10, dy: -5 }}
             />
 
             {/* Historical: solid */}
-            <Line type="monotone" dataKey="histSeda" stroke="#1fe9d1" strokeWidth={2} dot={false} connectNulls={false} />
+            <Line type="monotone" dataKey="histSeda" stroke={tc.teal} strokeWidth={2} dot={false} connectNulls={false} />
 
             {/* Forecast: dashed + gradient fill */}
-            <Area type="monotone" dataKey="foreSeda" stroke="#1fe9d1" strokeWidth={2} strokeDasharray="6 3" fill="url(#fSedaG)" dot={false} connectNulls={false} activeDot={{ r: 3, stroke: '#1fe9d1', strokeWidth: 2, fill: '#0a0a0f' }} />
+            <Area type="monotone" dataKey="foreSeda" stroke={tc.teal} strokeWidth={2} strokeDasharray="6 3" fill="url(#fSedaG)" dot={false} connectNulls={false} activeDot={{ r: 3, stroke: tc.teal, strokeWidth: 2, fill: tc.bgHex }} />
           </ComposedChart>
         </ResponsiveContainer>
       </div>

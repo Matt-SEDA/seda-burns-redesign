@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useThemeColors } from '@/lib/useTheme';
 import {
   BarChart,
   Bar,
@@ -30,11 +31,11 @@ interface Props {
   animClass?: string;
 }
 
-const BarTooltip = ({ active, payload, dataKey }: any) => {
+const BarTooltip = ({ active, payload, dataKey, tc }: any) => {
   if (!active || !payload?.length) return null;
   const d = payload[0].payload;
   return (
-    <div className="chart-tooltip">
+    <div className="chart-tooltip" style={{ background: tc.tooltipBg, borderColor: tc.tooltipBorder }}>
       <p className="chart-tooltip__date">{d.date}</p>
       <p className="chart-tooltip__value">
         {dataKey === 'usd' ? formatUSD(d.usd) : formatNumber(d.seda) + ' SEDA'}
@@ -48,12 +49,12 @@ const BarTooltip = ({ active, payload, dataKey }: any) => {
   );
 };
 
-const CumTooltip = ({ active, payload, dataKey }: any) => {
+const CumTooltip = ({ active, payload, dataKey, tc }: any) => {
   if (!active || !payload?.length) return null;
   const d = payload[0].payload;
   const cumKey = dataKey === 'usd' ? 'cumUsd' : 'cumSeda';
   return (
-    <div className="chart-tooltip">
+    <div className="chart-tooltip" style={{ background: tc.tooltipBg, borderColor: tc.tooltipBorder }}>
       <p className="chart-tooltip__date">{d.date}</p>
       <p className="chart-tooltip__value">
         {dataKey === 'usd' ? formatUSD(d[cumKey]) : formatNumber(d[cumKey]) + ' SEDA'}
@@ -80,12 +81,11 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
 
   const cumKey = dataKey === 'usd' ? 'cumUsd' : 'cumSeda';
 
+  const tc = useThemeColors();
+
   // Colors: purple for USD charts, teal for SEDA charts (SEDA tokens)
-  const barColor = dataKey === 'usd' ? 'var(--primary-primary)' : 'var(--success-success)';
-  const barColorDim = dataKey === 'usd' ? '#270067' : '#006458';
-  const lineColor = dataKey === 'usd' ? 'var(--primary-primary)' : 'var(--success-success)';
-  // Raw hex needed for SVG gradient stops
-  const lineColorHex = dataKey === 'usd' ? '#6100ff' : '#1fe9d1';
+  const lineColorHex = dataKey === 'usd' ? tc.purple : tc.teal;
+  const barColorDim = dataKey === 'usd' ? tc.purpleDim : tc.tealDim;
   const gradientId = `grad-${dataKey}`;
 
   // Summary stat for the current range
@@ -121,11 +121,11 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
                   <stop offset="100%" stopColor={lineColorHex} stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={tc.gridStroke} />
               <XAxis
                 dataKey="date"
                 tickFormatter={(d) => formatDateLabel(d, range)}
-                tick={{ fontSize: 10, fill: '#4b4855' }}
+                tick={{ fontSize: 10, fill: tc.axisFill }}
                 axisLine={false}
                 tickLine={false}
                 interval={Math.floor(cumData.length / 6)}
@@ -133,12 +133,12 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
               />
               <YAxis
                 tickFormatter={(v) => (dataKey === 'usd' ? '$' + formatNumber(v) : formatNumber(v))}
-                tick={{ fontSize: 10, fill: '#4b4855' }}
+                tick={{ fontSize: 10, fill: tc.axisFill }}
                 axisLine={false}
                 tickLine={false}
                 width={52}
               />
-              <Tooltip content={<CumTooltip dataKey={dataKey} />} cursor={{ stroke: 'rgba(255,255,255,0.06)' }} />
+              <Tooltip content={<CumTooltip dataKey={dataKey} tc={tc} />} cursor={{ stroke: tc.cursorStroke }} />
               <Area
                 type="monotone"
                 dataKey={cumKey}
@@ -150,7 +150,7 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
                   r: 4,
                   stroke: lineColorHex,
                   strokeWidth: 2,
-                  fill: '#0a0a0f',
+                  fill: tc.bgHex,
                 }}
               />
             </AreaChart>
@@ -163,11 +163,11 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
               }}
               onMouseLeave={() => setHoveredIdx(null)}
             >
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={tc.gridStroke} />
               <XAxis
                 dataKey="date"
                 tickFormatter={(d) => formatDateLabel(d, range)}
-                tick={{ fontSize: 10, fill: '#4b4855' }}
+                tick={{ fontSize: 10, fill: tc.axisFill }}
                 axisLine={false}
                 tickLine={false}
                 interval={filtered.length <= 7 ? 0 : Math.floor(filtered.length / 6)}
@@ -175,12 +175,12 @@ export default function BurnChart({ records, dataKey, title, animClass = '' }: P
               />
               <YAxis
                 tickFormatter={(v) => (dataKey === 'usd' ? '$' + formatNumber(v) : formatNumber(v))}
-                tick={{ fontSize: 10, fill: '#4b4855' }}
+                tick={{ fontSize: 10, fill: tc.axisFill }}
                 axisLine={false}
                 tickLine={false}
                 width={52}
               />
-              <Tooltip content={<BarTooltip dataKey={dataKey} />} cursor={false} />
+              <Tooltip content={<BarTooltip dataKey={dataKey} tc={tc} />} cursor={false} />
               <Bar dataKey={dataKey} radius={[3, 3, 0, 0]} maxBarSize={80}>
                 {filtered.map((_, i) => (
                   <Cell
